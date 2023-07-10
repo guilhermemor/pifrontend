@@ -1,11 +1,10 @@
-# Sistema de chamados 
+# SupportChamados - Sistema de Chamados
 
 
 
 ## Sistema de chamado em reactjs
 
-Uma aplicação em Reactjs que possibilita o cadastro e login do usuário, que gerencia empresas e chamados.
-A base de banco de dados é feita pelo FireBase, onde pode fazer upload de imagem, cadastros e chamados.
+Uma aplicação em ReactJS que permite aos usuários realizar cadastro e login, além de gerenciar empresas e chamados. A aplicação utiliza o Firebase como base de dados, possibilitando o upload de imagens, cadastro de usuários, empresas e o registro de chamados.
 
 
 
