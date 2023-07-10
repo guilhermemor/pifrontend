@@ -36,14 +36,13 @@ const Dashboard = () => {
   const [loadingMore, setLoadingMore] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [detail, setDetail] = useState();
-  const {user} = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
     async function loadChamados() {
-  
       const q = query(listRef, orderBy("created", "desc"), limit(5));
       const querySnapshot = await getDocs(q);
-  
+
       const lista = [];
       querySnapshot.forEach((doc) => {
         const chamado = {
@@ -55,26 +54,25 @@ const Dashboard = () => {
           createdFormat: format(doc.data().created.toDate(), "dd/MM/yyyy"),
           status: doc.data().status,
           complemento: doc.data().complemento,
-          userId: doc.data().userId
+          userId: doc.data().userId,
         };
 
         if (chamado.userId === user.uid) {
           lista.push(chamado);
         }
       });
-  
+
       if (lista.length === 0) {
         setIsEmpyt(true);
       } else {
         setChamados(lista);
       }
-  
+
       setLoading(false);
     }
 
     loadChamados();
   }, []);
-  
 
   async function updateState(querySnapshot) {
     const isCollectionEmpy = querySnapshot.size === 0;
@@ -92,7 +90,7 @@ const Dashboard = () => {
           createdFormat: format(doc.data().created.toDate(), "dd/MM/yyyy"),
           status: doc.data().status,
           complemento: doc.data().complemento,
-          userId: doc.data().userId
+          userId: doc.data().userId,
         });
       });
       const lastDocs = querySnapshot.docs[querySnapshot.docs.length - 1];
@@ -106,14 +104,20 @@ const Dashboard = () => {
 
   async function handleMore() {
     setLoadingMore(true);
-    const q = query(
-      listRef,
-      orderBy("created", "desc"),
-      startAfter(lastDocs),
-      limit(5)
-    );
-    const querySnapshot = await getDocs(q);
-    await updateState(querySnapshot);
+
+    if (lastDocs) {
+      const q = query(
+        listRef,
+        orderBy("created", "desc"),
+        startAfter(lastDocs),
+        limit(5)
+      );
+
+      const querySnapshot = await getDocs(q);
+      await updateState(querySnapshot);
+    } else {
+      // Lógica adicional ou tratamento de erro quando lastDocs é indefinido
+    }
   }
 
   if (loading) {
@@ -191,12 +195,8 @@ const Dashboard = () => {
                         <td data-label="Assunto">{item.assunto}</td>
                         <td data-label="Cadastrado">{item.createdFormat}</td>
                         <td data-label="#">
+                          <td data-label="Status"></td>
 
-                        <td data-label="Status">
-                          
-                        </td>
-                        
-                        
                           <button
                             onClick={() => toggleModal(item)}
                             className="action"
@@ -227,7 +227,7 @@ const Dashboard = () => {
                   })}
                 </tbody>
               </table>
-              {loadingMore && <h3>Buscando chamados...</h3>}
+             {loadingMore && <h3>Buscando chamados...</h3>}
               {!loadingMore && !isEmpyt && (
                 <button className="btnMore" onClick={handleMore}>
                   Buscar mais
